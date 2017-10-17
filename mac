@@ -44,6 +44,7 @@ fi
 
 # shellcheck disable=SC2016
 append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
+PATH="$HOME/.bin:$PATH" # For the current session as well
 
 HOMEBREW_PREFIX="/usr/local"
 
@@ -98,7 +99,7 @@ if ! command -v brew >/dev/null; then
     # shellcheck disable=SC2016
     append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
 
-    export PATH="/usr/local/bin:$PATH"
+    PATH="/usr/local/bin:$PATH" # For the current session as well
 fi
 
 if brew list | grep -Fq brew-cask; then
@@ -159,6 +160,7 @@ fancy_echo "Configuring asdf version manager..."
 if [ ! -d "$HOME/.asdf" ]; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
   append_to_zshrc "source $HOME/.asdf/asdf.sh" 1
+  . $HOME/.asdf/asdf.sh # For the current session as well
 fi
 
 install_asdf_plugin() {
@@ -171,8 +173,6 @@ install_asdf_plugin() {
 }
 
 # shellcheck disable=SC1090
-fancy_echo "reloading environment"
-su -l $USERNAME # This will load zsh with all the good stuff we've appended
 
 fancy_echo "Installing asdf plugins for ruby and node"
 install_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
@@ -205,3 +205,6 @@ if [ -f "$HOME/.laptop.local" ]; then
   # shellcheck disable=SC1090
   . "$HOME/.laptop.local"
 fi
+
+SHELL=$( which zsh )
+$SHELL -l
