@@ -171,7 +171,10 @@ install_asdf_plugin() {
 }
 
 # shellcheck disable=SC1090
-source "$HOME/.asdf/asdf.sh"
+fancy_echo "reloading environment"
+su -l $USERNAME # This will load zsh with all the good stuff we've appended
+
+fancy_echo "Installing asdf plugins for ruby and node"
 install_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
 install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
