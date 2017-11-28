@@ -139,7 +139,7 @@ brew "qt@5.5" if MacOS::Xcode.installed?
 brew "libyaml" # should come after openssl
 brew "coreutils"
 brew "yarn"
-cask "gpgtools"
+cask "gpg-suite"
 
 # Databases
 brew "postgres", restart_service: :changed
@@ -180,25 +180,24 @@ install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
 install_asdf_language() {
   local language="$1"
-  local version
-  version="$(asdf list-all "$language" | tail -1)"
-
-  if ! asdf list "$language" | grep -Fq "$version"; then
-    asdf install "$language" "$version"
-    asdf global "$language" "$version"
+  local version="$2"
+  if [ -z  "$version" ]; then
+    version="$(asdf list-all "$language" | tail -1)"
   fi
+
+  asdf install "$language" "$version"
+  asdf global "$language" "$version"
 }
 
 fancy_echo "Installing latest Ruby..."
-install_asdf_language "ruby"
+install_asdf_language "ruby" "2.4.1"
 gem update --system
 gem_install_or_update "bundler"
 number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
 
 fancy_echo "Installing latest Node..."
-bash "$HOME/.asdf/plugins/nodejs/bin/import-release-team-keyring"
-install_asdf_language "nodejs"
+install_asdf_language "nodejs" "7.8.0"
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
