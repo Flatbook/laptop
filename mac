@@ -197,7 +197,7 @@ number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
 
 fancy_echo "Installing latest Node..."
-install_asdf_language "nodejs" "7.8.0"
+install_asdf_language "nodejs" "9.2.0"
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
