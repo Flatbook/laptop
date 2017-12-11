@@ -144,6 +144,9 @@ cask "gpg-suite"
 # Databases
 brew "postgres", restart_service: :changed
 brew "redis", restart_service: :changed
+
+# Testing Support
+brew "chromedriver"
 EOF
 
 if brew list | grep --silent "qt@5.5"; then
