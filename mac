@@ -3,37 +3,8 @@
 # Be prepared to turn your laptop (or desktop, no haters here)
 # into an awesome development machine.
 
-printUsageAndExit() {
-    echo "Usage: $0 [-z | -Z]"
-    echo ""
-    echo "Flags:"
-    echo " -z (default): Changes your shell to zsh."
-    echo " -Z: Does not change your shell to zsh."
-    exit 1
-}
-
-# Parse flags
-SKIP_ZSH='' # Initial value is empty. The default set after parsing. (This
-            # allows the parsing to enforce the mutual exclusivity of -z and
-            # -Z.)  If set to 0, the shell will be changed to zsh. If set to 1,
-            # the shell will not change.
 SHELL_CHANGES=() # This is the list of environment variables/source commands to
                  # present to the user if they pass -Z.
-while getopts "z" opt; do
-  case "$opt" in
-    "z")
-      [[ -n "${SKIP_ZSH}" ]] && printUsageAndExit || SKIP_ZSH=0
-      ;;
-    "Z")
-      [[ -n "${SKIP_ZSH}" ]] && printUsageAndExit || SKIP_ZSH=1
-      ;;
-  esac
-done
-
-if [[ ! -n "${SKIP_ZSH}" ]]; then
-  # By default, change shell to zsh.
-  SKIP_ZSH=0
-fi
 
 fancy_echo() {
   local fmt="$1"; shift
@@ -42,30 +13,10 @@ fancy_echo() {
   printf "\n$fmt\n" "$@"
 }
 
-append_to_zshrc() {
-  local text="$1" zshrc
-  local skip_new_line="${2:-0}"
+append_to_shellrc() {
+  local text="$1"
 
-  if [[ "${SKIP_ZSH}" == 1 ]]; then
-    SHELL_CHANGES+=("$text")
-    return
-  fi
-
-  if [ -w "$HOME/.zshrc.local" ]; then
-    zshrc="$HOME/.zshrc.local"
-  else
-    zshrc="$HOME/.zshrc"
-  fi
-
-  touch "${zshrc}"
-
-  if ! grep -Fqs "$text" "$zshrc"; then
-    if [ "$skip_new_line" -eq 1 ]; then
-      printf "%s\n" "$text" >> "$zshrc"
-    else
-      printf "\n%s\n" "$text" >> "$zshrc"
-    fi
-  fi
+  SHELL_CHANGES+=("$text")
 }
 
 # shellcheck disable=SC2154
@@ -76,7 +27,7 @@ if [ ! -d "$HOME/.bin/" ]; then
 fi
 
 # shellcheck disable=SC2016
-append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
+append_to_shellrc 'export PATH="$HOME/.bin:$PATH"'
 PATH="$HOME/.bin:$PATH" # For the current session as well
 
 HOMEBREW_PREFIX="/usr/local"
@@ -91,31 +42,6 @@ else
   sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
 fi
 
-update_shell() {
-  local shell_path;
-  shell_path="$(which zsh)"
-
-  fancy_echo "Changing your shell to zsh ..."
-  if ! grep "$shell_path" /etc/shells > /dev/null 2>&1 ; then
-    fancy_echo "Adding '$shell_path' to /etc/shells"
-    sudo sh -c "echo $shell_path >> /etc/shells"
-  fi
-  sudo chsh -s "$shell_path" "$USER"
-}
-
-case "$SHELL" in
-  */zsh)
-    if [ "$(which zsh)" != '/usr/local/bin/zsh' ] ; then
-      update_shell
-    fi
-    ;;
-  *)
-    if [[ "${SKIP_ZSH}" != 1 ]]; then
-      update_shell
-    fi
-    ;;
-esac
-
 gem_install_or_update() {
   if gem list "$1" --installed > /dev/null; then
     gem update "$@"
@@ -129,10 +55,10 @@ if ! command -v brew >/dev/null; then
   curl -fsS \
     'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 
-  append_to_zshrc '# recommended by brew doctor'
+  append_to_shellrc '# recommended by brew doctor'
 
   # shellcheck disable=SC2016
-  append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
+  append_to_shellrc 'export PATH="/usr/local/bin:$PATH"' 1
 
   PATH="/usr/local/bin:$PATH" # For the current session as well
 fi
@@ -184,17 +110,6 @@ brew "redis", restart_service: :changed
 cask "chromedriver"
 EOF
 
-# Install zsh if the -z flag is not specified.
-if [[ "${SKIP_ZSH}" != 1 ]]; then
-    # Append the zsh into the bundle file variable
-    read -d '' BREW_BUNDLE_FILE <<EOF
-${BREW_BUNDLE_FILE}
-
-# More unix
-brew "zsh"
-EOF
-fi
-
 echo "${BREW_BUNDLE_FILE}" | brew bundle --file=-
 
 if brew list | grep --silent "qt@5.5"; then
@@ -210,7 +125,7 @@ brew link --force heroku
 fancy_echo "Configuring asdf version manager..."
 if [ ! -d "$HOME/.asdf" ]; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
-  append_to_zshrc "source $HOME/.asdf/asdf.sh" 1
+  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
   . $HOME/.asdf/asdf.sh # For the current session as well
 fi
 
@@ -259,15 +174,21 @@ if [ -f "$HOME/.laptop.local" ]; then
 fi
 
 fancy_echo "Script complete!"
-
-if [[ "${SKIP_ZSH}" == 1 ]]; then
-  fancy_echo "Since zsh was not installed, please add the following to your shell rc:"
-  echo ""
-  for line in "${SHELL_CHANGES[@]}"; do
-    echo $line;
-  done
+fancy_echo ""
+fancy_echo "=============================================="
+fancy_echo ""
+# Ok, there's some incongruence around bash(1) here.
+# On Linux:
+#   .bash_profile is executed for login shells, and
+#   .bashrc is called for interactive non-login shells.
+# In macOS, Terminal (and every other macOS terminal emulator)
+#   always starts bash as a login shell (thus it always calls .bash_profile).
+if [[ $(uname -s) = 'Darwin' ]]; then
+    fancy_echo "Please add the following to your shell rc (.zshrc, .bash_profile, etc):"
 else
-  # Switch to zsh
-  SHELL=$( which zsh )
-  $SHELL -l
+    fancy_echo "Please add the following to your shell rc (.zshrc, .bashrc, etc):"
 fi
+echo ""
+for line in "${SHELL_CHANGES[@]}"; do
+    echo $line;
+done
