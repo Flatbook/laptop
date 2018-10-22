@@ -99,6 +99,7 @@ brew "qt@5.5" if MacOS::Xcode.installed?
 # Programming language prerequisites and package managers
 brew "libyaml" # should come after openssl
 brew "coreutils"
+brew "gpg"
 brew "yarn"
 cask "gpg-suite"
 
@@ -125,6 +126,9 @@ brew link --force heroku
 fancy_echo "Configuring asdf version manager..."
 if [ ! -d "$HOME/.asdf" ]; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
+  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
+  . $HOME/.asdf/asdf.sh # For the current session as well
+else
   append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
   . $HOME/.asdf/asdf.sh # For the current session as well
 fi
