@@ -87,7 +87,7 @@ brew "tmux"
 brew "vim"
 
 # Heroku
-brew "heroku"
+brew "heroku/brew/heroku"
 brew "parity"
 
 # Image manipulation
