@@ -124,14 +124,14 @@ brew unlink heroku
 brew link --force heroku
 
 fancy_echo "Configuring asdf version manager..."
-if [ ! -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
-  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
-  . $HOME/.asdf/asdf.sh # For the current session as well
-else
-  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
-  . $HOME/.asdf/asdf.sh # For the current session as well
+if [ ! -d "/usr/local/opt/asdf" ]; then
+  brew install asdf
 fi
+append_to_shellrc "source /usr/local/opt/asdf/asdf.sh" 1
+append_to_shellrc "source /usr/local/etc/bash_completion.d/asdf.bash" 1
+# For the current session as well
+. /usr/local/opt/asdf/asdf.sh
+. /usr/local/etc/bash_completion.d/asdf.bash
 
 install_asdf_plugin() {
   local name="$1"
