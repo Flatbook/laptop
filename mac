@@ -101,6 +101,7 @@ brew "libyaml" # should come after openssl
 brew "coreutils"
 brew "gpg"
 brew "yarn"
+brew "asdf"
 cask "gpg-suite"
 
 # Databases
@@ -124,14 +125,9 @@ brew unlink heroku
 brew link --force heroku
 
 fancy_echo "Configuring asdf version manager..."
-if [ ! -d "/usr/local/opt/asdf" ]; then
-  brew install asdf
-fi
 append_to_shellrc "source /usr/local/opt/asdf/asdf.sh" 1
-append_to_shellrc "source /usr/local/etc/bash_completion.d/asdf.bash" 1
 # For the current session as well
 . /usr/local/opt/asdf/asdf.sh
-. /usr/local/etc/bash_completion.d/asdf.bash
 
 install_asdf_plugin() {
   local name="$1"
