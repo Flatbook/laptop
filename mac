@@ -101,6 +101,7 @@ brew "libyaml" # should come after openssl
 brew "coreutils"
 brew "gpg"
 brew "yarn"
+brew "asdf"
 cask "gpg-suite"
 
 # Databases
@@ -124,14 +125,9 @@ brew unlink heroku
 brew link --force heroku
 
 fancy_echo "Configuring asdf version manager..."
-if [ ! -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
-  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
-  . $HOME/.asdf/asdf.sh # For the current session as well
-else
-  append_to_shellrc "source $HOME/.asdf/asdf.sh" 1
-  . $HOME/.asdf/asdf.sh # For the current session as well
-fi
+append_to_shellrc "source /usr/local/opt/asdf/asdf.sh" 1
+# For the current session as well
+. /usr/local/opt/asdf/asdf.sh
 
 install_asdf_plugin() {
   local name="$1"
