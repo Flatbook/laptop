@@ -101,7 +101,6 @@ brew "libyaml" # should come after openssl
 brew "coreutils"
 brew "gpg"
 brew "yarn"
-brew "asdf"
 cask "gpg-suite"
 
 # Databases
@@ -124,48 +123,18 @@ fancy_echo "Update heroku binary..."
 brew unlink heroku
 brew link --force heroku
 
-fancy_echo "Configuring asdf version manager..."
-append_to_shellrc "source /usr/local/opt/asdf/asdf.sh" 1
-# For the current session as well
-. /usr/local/opt/asdf/asdf.sh
+fancy_echo "Installing rbenv"
+brew install rbenv
+rbenv init
+echo 'eval "$(rbenv init -)"' >>~/.bash_profile
 
-install_asdf_plugin() {
-  local name="$1"
-  local url="$2"
-
-  if ! asdf plugin-list | grep -Fq "$name"; then
-    asdf plugin-add "$name" "$url"
-  fi
-}
-
-# shellcheck disable=SC1090
-
-fancy_echo "Installing asdf plugins for ruby and node"
-install_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
-install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
-# Import the Node.js release team's OpenPGP keys to main keyring
-~/.asdf/plugins/nodejs/bin/import-release-team-keyring
-
-install_asdf_language() {
-  local language="$1"
-  local version="$2"
-  if [ -z  "$version" ]; then
-    version="$(asdf list-all "$language" | tail -1)"
-  fi
-
-  asdf install "$language" "$version"
-  asdf global "$language" "$version"
-}
 
 fancy_echo "Installing latest Ruby..."
-install_asdf_language "ruby" "2.4.1"
-gem update --system
-gem_install_or_update "bundler"
-number_of_cores=$(sysctl -n hw.ncpu)
-bundle config --global jobs $((number_of_cores - 1))
+rbenv install "2.4.1"
 
 fancy_echo "Installing latest Node..."
-install_asdf_language "nodejs" "9.2.0"
+# https://github.com/tj/n
+brew install n
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
