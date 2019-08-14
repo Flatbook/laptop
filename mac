@@ -132,9 +132,18 @@ echo 'eval "$(rbenv init -)"' >>~/.bash_profile
 fancy_echo "Installing latest Ruby..."
 rbenv install "2.4.1"
 
-fancy_echo "Installing latest Node..."
-# https://github.com/tj/n
-brew install n
+fancy_echo "Installing nvm..."
+brew install nvm
+
+mkdir ~/.nvm
+echo 'export NVM_DIR="$HOME/.nvm"' >>~/.bash_profile
+echo '[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"' >>~/.bash_profile
+echo '[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"' >>~/.bash_profile
+
+source ~/.bash_profile
+
+fancy_echo "Installing Node 10.16..."
+nvm install 10.16
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
