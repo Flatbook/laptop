@@ -136,9 +136,12 @@ fancy_echo "Installing nvm..."
 brew install nvm
 
 mkdir ~/.nvm
-echo 'export NVM_DIR="$HOME/.nvm"' >>~/.bash_profile
-echo '[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"' >>~/.bash_profile
-echo '[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"' >>~/.bash_profile
+
+if [ "$NVM_DIR" = "" ]; then
+	echo 'export NVM_DIR="$HOME/.nvm"' >>~/.bash_profile
+	echo '[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"' >>~/.bash_profile
+	echo '[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"' >>~/.bash_profile
+fi
 
 source ~/.bash_profile
 
