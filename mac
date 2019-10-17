@@ -75,7 +75,6 @@ read -r -d '' BREW_BUNDLE_FILE <<EOF
 tap "thoughtbot/formulae"
 tap "homebrew/services"
 tap "universal-ctags/universal-ctags"
-tap "caskroom/cask"
 
 # Unix
 brew "universal-ctags", args: ["HEAD"]
@@ -87,14 +86,15 @@ brew "tmux"
 brew "vim"
 
 # Heroku
-brew "heroku/brew/heroku"
+tap "heroku/brew"
+brew "heroku"
 brew "parity"
 
 # Image manipulation
 brew "imagemagick"
 
 # Testing
-brew "qt@5.5" if MacOS::Xcode.installed?
+brew "qt" if MacOS::Xcode.installed?
 
 # Programming language prerequisites and package managers
 brew "libyaml" # should come after openssl
@@ -113,10 +113,10 @@ EOF
 
 echo "${BREW_BUNDLE_FILE}" | brew bundle --file=-
 
-if brew list | grep --silent "qt@5.5"; then
+if brew list | grep --silent "qt"; then
   fancy_echo "Symlink qmake binary to /usr/local/bin for Capybara Webkit..."
-  brew unlink qt@5.5
-  brew link --force qt@5.5
+  brew unlink qt
+  brew link --force qt
 fi
 
 fancy_echo "Update heroku binary..."
