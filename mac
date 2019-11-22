@@ -119,6 +119,9 @@ if brew list | grep --silent "qt"; then
   brew link --force qt
 fi
 
+fancy_echo "Installing AWS CLI..."
+brew install awscli
+
 fancy_echo "Update heroku binary..."
 brew unlink heroku
 brew link --force heroku
@@ -127,7 +130,6 @@ fancy_echo "Installing rbenv"
 brew install rbenv
 rbenv init
 echo 'eval "$(rbenv init -)"' >>~/.bash_profile
-
 
 fancy_echo "Installing latest Ruby..."
 rbenv install "2.4.1"
