@@ -105,17 +105,21 @@ Testing tools:
 
 Programming languages, package managers, and configuration:
 
-* [ASDF] for managing programming language versions
+* [awscli] for managing aws services
+* [rbenv] for managing ruby versions
+* [nvm] for managing node versions
 * [Bundler] for managing Ruby libraries
 * [Node.js] and [NPM], for running apps and installing JavaScript packages
 * [Ruby] stable for writing general-purpose code
 * [Yarn] for managing JavaScript packages
 
+[awscli]: https://aws.amazon.com/cli/
+[rbenv]: https://github.com/rbenv/rbenv
 [Bundler]: http://bundler.io/
 [ImageMagick]: http://www.imagemagick.org/
 [Node.js]: http://nodejs.org/
 [NPM]: https://www.npmjs.org/
-[ASDF]: https://github.com/asdf-vm/asdf
+[nvm]: https://github.com/nvm-sh/nvm
 [Ruby]: https://www.ruby-lang.org/en/
 [Yarn]: https://yarnpkg.com/en/
 
