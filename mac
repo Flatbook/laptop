@@ -129,7 +129,10 @@ brew link --force heroku
 fancy_echo "Installing rbenv..."
 brew install rbenv
 rbenv init
-echo 'eval "$(rbenv init -)"' >>~/.bash_profile
+# Fix fork() issue on OSX (see: https://github.com/rtomayko/shotgun/issues/69)
+echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES'  >>~/.bash_profile >>~/.zshrc
+
+echo 'eval "$(rbenv init -)"' >>~/.bash_profile >>~/.zshrc
 
 fancy_echo "Installing Ruby 2.4.1..."
 rbenv install "2.4.1" --skip-existing
@@ -140,12 +143,13 @@ brew install nvm
 mkdir ~/.nvm
 
 if [ "$NVM_DIR" = "" ]; then
-	echo 'export NVM_DIR="$HOME/.nvm"' >>~/.bash_profile
-	echo '[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"' >>~/.bash_profile
-	echo '[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"' >>~/.bash_profile
+	echo 'export NVM_DIR="$HOME/.nvm"' >>~/.bash_profile >>~/.zshrc
+	echo '[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"' >>~/.bash_profile >>~/.zshrc
+	echo '[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"' >>~/.bash_profile >>~/.zshrc
 fi
 
 source ~/.bash_profile
+source ~/.zshrc
 
 fancy_echo "Installing Node 10.16..."
 nvm install 10.16
@@ -169,7 +173,7 @@ fancy_echo ""
 if [[ $(uname -s) = 'Darwin' ]]; then
     fancy_echo "Please add the following to your shell rc (.zshrc, .bash_profile, etc):"
 else
-    fancy_echo "Please add the following to your shell rc (.zshrc, .bashrc, etc):"
+    fancy_echo "Please add the following to your shell rc (.bashrc, etc):"
 fi
 echo ""
 for line in "${SHELL_CHANGES[@]}"; do
