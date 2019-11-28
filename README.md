@@ -14,12 +14,14 @@ related setup lines for the flatbook repository.
 Requirements
 ------------
 
-We support:
+We support [bash](https://www.gnu.org/software/bash/manual/html_node/What-is-Bash_003f.html) and [zsh](https://www.zsh.org/) on:
 
 * macOS Mavericks (10.9)
 * macOS Yosemite (10.10)
 * macOS El Capitan (10.11)
 * macOS Sierra (10.12)
+* macOS Mojave (10.14)
+* macOS Catalina (10.15)
 
 Older versions may work but aren't regularly tested.
 Bug reports for older versions are welcome.
