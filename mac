@@ -28,6 +28,7 @@ fi
 
 # shellcheck disable=SC2016
 append_to_shellrc 'export PATH="$HOME/.bin:$PATH"'
+append_to_shellrc 'export NPM_TOKEN=$(heroku config:get NPM_TOKEN -a flatbook-production)'
 PATH="$HOME/.bin:$PATH" # For the current session as well
 
 HOMEBREW_PREFIX="/usr/local"
