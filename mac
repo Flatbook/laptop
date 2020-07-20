@@ -135,8 +135,9 @@ echo 'export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES'  >>~/.bash_profile >>~/.zs
 
 echo 'eval "$(rbenv init -)"' >>~/.bash_profile >>~/.zshrc
 
-fancy_echo "Installing Ruby 2.4.1..."
-rbenv install "2.4.1" --skip-existing
+fancy_echo "Installing Ruby 2.5.8..."
+brew upgrade ruby-build
+rbenv install "2.5.8" --skip-existing
 
 fancy_echo "Installing nvm..."
 brew install nvm
