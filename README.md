@@ -22,6 +22,7 @@ We support [bash](https://www.gnu.org/software/bash/manual/html_node/What-is-Bas
 * macOS Sierra (10.12)
 * macOS Mojave (10.14)
 * macOS Catalina (10.15)
+* macOS BigSur (11.1)
 
 Older versions may work but aren't regularly tested.
 Bug reports for older versions are welcome.
